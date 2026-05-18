@@ -1,5 +1,4 @@
-// (c) Technion IIT, Department of Electrical Engineering 2021
-// SystemVerilog version Alex Grinshpun May 2018
+
 // up counter 
 module	addr_counter	 #(
 					COUNT_SIZE = 8
