@@ -1,0 +1,79 @@
+// (c) Technion IIT, Department of Electrical Engineering 2021 
+//-- Alex Grinshpun Apr 2017
+//-- Dudy Nov 13 2017
+// SystemVerilog version Alex Grinshpun May 2018
+// coding convention dudy December 2018
+
+//-- Eyal Lev 31 Jan 2021
+
+module	objects_mux	(	
+//		--------	Clock Input	 	
+					input		logic	clk,
+					input		logic	resetN,
+		   // smiley 
+					input		logic	smileyDrawingRequest, // two set of inputs per unit
+					input		logic	[7:0] smileyRGB, 
+					 
+		  // players blue
+					input		logic	PBDrawingRequest, // two set of inputs per unit
+					input		logic	[7:0] PBRGB, 	
+			
+			// players red		
+					input		logic	PRDrawingRequest, // two set of inputs per unit
+					input		logic	[7:0] PRRGB, 	
+			  
+		  ////////////////////////
+		  // background 
+					input    logic RedScoreDrawingRequest, // box of numbers
+					input		logic	[7:0] RedScoreRGB, 
+					input    logic BlueScoreDrawingRequest, // box of numbers
+					input		logic	[7:0] BlueScoreRGB,
+					
+					input 	logic timerDR,
+					input 	logic [7:0] timerRGB,
+					
+					input 	logic labelsDR,
+					
+					input		logic	[7:0] backGroundRGB, 
+					
+					input 	logic gameWelcome, 
+			  
+				   output	logic	[7:0] RGBOut
+);
+
+always_ff@(posedge clk or negedge resetN)
+begin
+	if(!resetN) begin
+			RGBOut	<= 8'b0;
+	end
+	
+	else begin
+		if (smileyDrawingRequest == 1'b1 )   
+			RGBOut <= smileyRGB;  //first priority 
+		 
+		else if (labelsDR)
+			RGBOut <= 8'b0;
+	
+		else if (PBDrawingRequest == 1'b1 & !gameWelcome)   
+			RGBOut <= PBRGB;  //second priority -----
+		 
+		else if (PRDrawingRequest == 1'b1 & !gameWelcome)   
+			RGBOut <= PRRGB;  //third priority -----
+		 
+		else if (RedScoreDrawingRequest == 1'b1)
+			RGBOut <= RedScoreRGB;
+			
+		else if (BlueScoreDrawingRequest == 1'b1)
+			RGBOut <= BlueScoreRGB;
+						
+		else if (timerDR == 1'b1)
+			RGBOut <= timerRGB;
+			
+						
+		else 
+			RGBOut <= backGroundRGB ; // last priority 
+		end ; 
+	end
+
+endmodule
+

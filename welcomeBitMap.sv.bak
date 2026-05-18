@@ -1,0 +1,44 @@
+module LabelSelect(
+	input logic gameWelcome,
+	input logic gamePause,
+	input logic gameEnd,
+	input logic result[1:0],
+	input logic welcomeDR,
+	input logic goalDR,
+	input logic winDR,
+	input logic drawDR,
+	input logic loseDR
+	output logic labelDR
+);
+
+always_comb begin
+
+	if(gameWelcome)
+	
+		labelDR=welcomeDR;
+		
+	if(gamePause)
+	
+		labelDR=goalDR;
+		
+	if(gameEnd) begin
+	
+		if(result==2'b0)
+			labelDR=winDR;
+			
+		else if(result==2'b1)
+			labelDR=drawDR;
+		
+		else
+			labelDR=loseDR;
+	 end
+end
+endmodule
+		
+		
+		
+		
+		
+		
+		
+		

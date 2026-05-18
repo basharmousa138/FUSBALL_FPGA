@@ -1,0 +1,9 @@
+module numberGen(
+	output logic [10:0] num
+);
+
+parameter logic [10:0] P = 11'b0;
+
+assign num = P;
+
+endmodule

@@ -1,0 +1,85 @@
+// (c) Technion IIT, Department of Electrical Engineering 2021 
+//-- Alex Grinshpun Apr 2017
+//-- Dudy Nov 13 2017
+// SystemVerilog version Alex Grinshpun May 2018
+// coding convention dudy December 2018
+// updaed Eyal Lev Feb 2021
+
+module	bluePlayer_move	(	
+ 
+					input	logic	clk,
+					input	logic	resetN,
+					input	logic	startOfFrame,  // short pulse every start of frame 30Hz 
+					input	logic	up,  //change the direction in Y to up  
+					input	logic	down, //change the direction in Y to down  
+					input logic collision_brackets,
+					
+					output	 logic signed	[10:0]	topLeftY  // can be negative , if the object is partliy outside 
+					
+);
+
+
+// a module used to generate the  ball trajectory.  
+
+parameter int INITIAL_Y = 32;
+parameter int INITIAL_Y_SPEED = 120;
+
+const int	FIXED_POINT_MULTIPLIER	=	64;
+// FIXED_POINT_MULTIPLIER is used to enable working with integers in high resolution so that 
+// we do all calculations with topLeftX_FixedPoint to get a resolution of 1/64 pixel in calcuatuions,
+// we devide at the end by FIXED_POINT_MULTIPLIER which must be 2^n, to return to the initial proportions
+ // local parameters 
+int Yspeed, topLeftY_FixedPoint;
+
+//////////--------------------------------------------------------------------------------------------------------------=
+//  calculation 0f Y Axis speed using gravity or colision
+logic flag,was_collision;
+
+always_ff@(posedge clk or negedge resetN)
+begin
+	if(!resetN) begin 
+		Yspeed	<= 0;
+		topLeftY_FixedPoint	<= INITIAL_Y*FIXED_POINT_MULTIPLIER;
+		flag = 1'b0;
+		was_collision = 1'b0;
+	end 
+	else begin
+	// colision Calcultaion 
+		
+		Yspeed<=0;
+		if(collision_brackets)
+			flag=1'b1;
+		
+		if(up) begin
+			if(!was_collision | topLeftY>=32)
+					Yspeed <= -INITIAL_Y_SPEED ;
+		end
+		
+		if(down) begin
+			if(!was_collision | topLeftY<32)
+					Yspeed <= INITIAL_Y_SPEED ;
+		end
+		
+		// perform  position and speed integral only 30 times per second 
+		
+		if (startOfFrame == 1'b1) begin 
+				if(flag)
+					was_collision=1'b1;
+				else
+					was_collision=1'b0;
+				flag=1'b0;
+				topLeftY_FixedPoint  <= topLeftY_FixedPoint + Yspeed; // position interpolation	
+		end
+
+
+	end
+end
+
+//////////--------------------------------------------------------------------------------------------------------------=
+//  calculation of X Axis speed using and position calculate regarding X_direction key or colision
+
+//get a better (64 times) resolution using integer     // note it must be 2^n 
+assign 	topLeftY = topLeftY_FixedPoint / FIXED_POINT_MULTIPLIER ;    
+
+
+endmodule
