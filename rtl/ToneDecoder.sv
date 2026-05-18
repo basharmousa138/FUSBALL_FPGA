@@ -1,13 +1,9 @@
-/// (c) Technion IIT, Department of Electrical Engineering 2021 
 //-- This module is dividing the 50MHz CLOCK OSC, and sends clock
 //-- enable it to the appropriate outputs in order to achieve
 //-- operation at slower rate of individual modules (this is done
 //-- to keep the whole system globally synchronous).
 //-- All DACs output are set to 100 KHz. 
 
-//-- Alex Grinshpun Apr 2017
-//-- Dudy Nov 13 2017
-// SystemVerilog version Alex Grinshpun May 2018
 
 module	prescaler	(	
 //		--////////////////////	Clock Input	 	////////////////////	
