@@ -1,4 +1,3 @@
-// (c) Technion IIT, Department of Electrical Engineering  2021
 
 // Implements a simple up-counter for demonstration purposes only
 
