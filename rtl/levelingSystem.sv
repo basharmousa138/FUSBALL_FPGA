@@ -1,5 +1,4 @@
-// (c) Technion IIT, Department of Electrical Engineering 2021 
-// Written By David Bar-On  June 2018 
+
 
 module HexSS	
  ( input   logic [3:0] iDIG, 
